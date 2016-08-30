@@ -259,7 +259,7 @@
             var bufsize = 8192;
             data = new Uint8Array(bufsize);
 
-            var resizeBuffer = function() { 
+            var resizeBuffer = function() {
                 var newdata = new Uint8Array(data.length + bufsize);
                 newdata.set(data);
                 data = newdata;
@@ -658,7 +658,11 @@
             if (!frame) return;
             frames.push({
                             data: frame.getImageData(0, 0, hdr.width, hdr.height),
-                            delay: delay
+                            dataURL: frame.canvas.toDataURL('type/png', 1),
+                            delay: delay,
+                            disposalMethod: disposalMethod,
+                            transparencyIndex: transparency,
+                            transparencyColor: frame._colorTable[transparency]
                         });
             frameOffsets.push({ x: 0, y: 0 });
         };
@@ -670,7 +674,7 @@
 
             //ct = color table, gct = global color table
             var ct = img.lctFlag ? img.lct : hdr.gct; // TODO: What if neither exists?
-
+            frame._colorTable = ct;
             /*
             Disposal method indicates the way in which the graphic is to
             be treated after being displayed.
